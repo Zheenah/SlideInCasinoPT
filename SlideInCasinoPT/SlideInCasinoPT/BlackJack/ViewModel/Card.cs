@@ -11,21 +11,12 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
     {
         // new for factory
         public CCTexture2D FrontTexture, BackTexture;
-        public CCRect TextureRect;
-
-
-        private string imageFile;
+        public CCRect FrontTextureRect, BackTextureRect;
 
 
         public CCRenderTexture RenderTexture;
 
-        
        
-
-       //todo: check for null
-        //public CCPoint CardSize => new CCPoint(background.ContentSize.Width, background.ContentSize.Height);
-
-
 
         public override byte Opacity
         {
@@ -39,26 +30,20 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
             }
         }
 
-        public Card(string value, string imageFile)
+        public Card()
         {
-            this.imageFile = imageFile;
 
-            
-
-
-
-            //SwitchToBackTexture();
         }
 
 
-        private void SwitchToFrontTexture()
+        public void SwitchToFrontTexture()
         {
-            RenderTexture.Sprite.ReplaceTexture(FrontTexture, TextureRect);
+            RenderTexture.Sprite.ReplaceTexture(FrontTexture, FrontTextureRect);
         }
 
-        private void SwitchToBackTexture()
+        public void SwitchToBackTexture()
         {
-            RenderTexture.Sprite.ReplaceTexture(BackTexture, TextureRect);
+            RenderTexture.Sprite.ReplaceTexture(BackTexture, BackTextureRect);
         }
 
 
@@ -85,11 +70,34 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
 
         }
 
-        public async Task FlipToFront(float duration)
+        public async Task MoveTo(float duration, CCPoint targetPosition)
+        {
+            CCMoveTo moveToAction = new CCMoveTo(duration, targetPosition);
+            var easeMoveTo = new CCEaseOut(moveToAction, 2f);
+            await this.RunActionAsync(easeMoveTo);
+        }
+
+        public async Task RotateTo(float duration, float deltaAngle)
+        {
+            CCRotateTo rotateToAction = new CCRotateTo(duration, deltaAngle);
+            var easeMoveTo = new CCEaseOut(rotateToAction, 2f);
+            await this.RunActionAsync(easeMoveTo);
+        }
+
+        public async Task FlipToFront_RightToLeft(float duration)
         {
             CCCallFunc switchToFront = new CCCallFunc(this.SwitchToFrontTexture);
             CCSequence flipSequence = new CCSequence(new CCOrbitCamera(duration, 1, 0, 0, 90, 0, 0), switchToFront,
                     new CCOrbitCamera(duration, 1, 0, -90, 90, 0, 0));
+            await RenderTexture.Sprite.RunActionAsync(flipSequence);
+
+        }
+        public async Task FlipToFront(float duration)
+        {
+            float radius = 60;
+            CCCallFunc switchToFront = new CCCallFunc(this.SwitchToFrontTexture);
+            CCSequence flipSequence = new CCSequence(new CCOrbitCamera(duration, 1, radius, 0, -90, 0, 0), switchToFront,
+                    new CCOrbitCamera(duration, radius, -(radius-1), 90, -90, 0, 0));
             await RenderTexture.Sprite.RunActionAsync(flipSequence);
 
         }
@@ -100,6 +108,12 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
                     new CCOrbitCamera(duration, 1, 0, -90, 90, 0, 0));
             await RenderTexture.Sprite.RunActionAsync(flipSequence);
 
+        }
+
+        public async Task Pause(float duration)
+        {
+            CCDelayTime delay = new CCDelayTime(duration);
+            await RenderTexture.Sprite.RunActionAsync(delay);
         }
 
     }

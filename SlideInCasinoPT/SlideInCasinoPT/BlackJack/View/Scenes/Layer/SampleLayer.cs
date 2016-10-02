@@ -15,134 +15,98 @@ namespace SlideInCasinoPT.BlackJack.View.Scenes.Layer
  
     public class SampleLayer : CCLayer
     {
-        public SampleLayer()
+        private CCSize screenSize;
+        public SampleLayer(int width, int height)
         {
-
+            screenSize = new CCSize(width, height);
             //InitMainGameObject();
             //DrawSprite();
  
         }
 
-        public void InitMainGameObject()
-        {
-            Playcard card1 = new Playcard();
-            this.AddChild(card1);
-            card1.Position = new CCPoint(300,300);
-        }
-
-        public void DrawSprite()
-        {
-            CCSprite sprite = new CCSprite("poker_back.png");
-             
-            this.AddChild(sprite);
-            sprite.Position = new CCPoint(200,200);
-            //sprite.Scale = 3f;
-
-            CCAction right = new CCMoveBy(5,new CCPoint(400,0));
-            CCAction up = new CCMoveBy(3, new CCPoint(0,400));
-            //sprite.RunActions(up, right);
-
-            CCFlipY flipY = new CCFlipY(true);
-           CCFlipX3D flipx3 = new CCFlipX3D(5, new CCGridSize(1,1));
-            
-            CCTexture2D pokerFrontText = new CCTexture2D();
-            //sprite.ReplaceTexture(spriteFront.Texture,sprite.TextureRectInPixels);
-            
-            FlipCard(sprite);
 
 
-        }
 
-
-        public async void FlipCard(CCSprite card)
-        {
-            //CCOrbitCamera flipAction = new CCOrbitCamera(5.0f, 1, 0, 0, 90, 0, 0);
-            //await card.RunActionAsync(new CCOrbitCamera(5.0f, 1, 0, 0, 90, 0, 0));
-            CCSprite spriteFront = new CCSprite("poker_bg.png");
-            CCTexture2D cardFrontTexture = spriteFront.Texture;
-            CCTexture2D cardBackTexture = card.Texture;
-
-            
-            CCCallFunc switchToFront =  new CCCallFunc( () => card.ReplaceTexture(cardFrontTexture, card.TextureRectInPixels));
-            CCCallFunc switchToBack = new CCCallFunc(() => card.ReplaceTexture(cardBackTexture, card.TextureRectInPixels));
-            ////card.ReplaceTexture(spriteFront.Texture, card.TextureRectInPixels);
-            //await card.RunActionAsync(new CCOrbitCamera(5.0f, 1, 0, 90, 90, 0, 0));
-            var time = 0.5f;
-            CCDelayTime pauseTime = new CCDelayTime(1f);
-            CCSequence flipSequence = new CCSequence(new CCOrbitCamera(time, 1, 0, 0, 90, 0, 0), switchToFront,
-                    new CCOrbitCamera(time, 1, 0, 90, 90, 0, 0), pauseTime,new CCOrbitCamera(time , 1, 0, 180, 90, 0, 0), switchToBack,
-                     new CCOrbitCamera(time, 1, 0, 270, 90, 0, 0), pauseTime
-
-                    );
-
-            CCRepeatForever flippingForever = new CCRepeatForever(flipSequence);
-            card.RunAction(flippingForever);
-        }
 
 
     
 
 
-        public void DrawCircle()
-        {
-            CCDrawNode circle = new CCDrawNode();
 
-            this.AddChild(circle);
-            circle.DrawCircle(
-                // The center to use when drawing the circle,
-                // relative to the CCDrawNode:
-                new CCPoint(0, 0),
-                radius: 15,
-                color: CCColor4B.White);
-            circle.PositionX = 20;
-            circle.PositionY = 50;
-            CCRect rectToDraw = new CCRect(10,10,50,50);
-            
-            circle.DrawRect(rectToDraw);
-        }
-
-
-        protected override void AddedToScene()
+        protected  override async void AddedToScene()
         {
             base.AddedToScene();
 
             GameView.Stats.Enabled = true;
 
-            //await CardTestStuff();
+            CCPoint DealerDeckPosition = new CCPoint(screenSize.Width/2f, screenSize.Height -(screenSize.Height*(1f/5f)) );
+            CCPoint PlayerDeckPosition = new CCPoint(screenSize.Width / 2f, screenSize.Height * (0.8f / 3f));
+            await DrawDeck(7, DealerDeckPosition.X, DealerDeckPosition.Y, false);
+            DrawDeck(10, PlayerDeckPosition.X, PlayerDeckPosition.Y, true);
+            //DrawDeck(8,150,700, false);
 
-            TestNewCardStuff();
         }
 
-        private void TestNewCardStuff()
+        private async Task DrawDeck(int cardCount, float x, float y, bool bowUp)
         {
-            Card card = CardFactory.Self.CreateNew(Suit.Diamonds, CardValue.Jack);
-            this.AddChild(card);
-            card.Position = new CCPoint(200,200);
+        
+            float bowValue = bowUp ? 1 : -1;
+
+            float amplitude = 1f;
+
+            var suits = Enum.GetValues(typeof(Suit));
+            var cardValues = Enum.GetValues(typeof(CardValue));
+            
+            Random random = new Random();
+
+            CCPoint addPos = new CCPoint(30, amplitude * bowValue);
+            float addDegree = 5f * bowValue;
+
+            CCPoint startPos = new CCPoint(x,y);
+            float startDegree = 0;
+
+            var end = (int) Math.Ceiling((cardCount/2f));
+            var start = (int) Math.Floor(cardCount/2f);
+
+
+            var deckPosition = new CCPoint(screenSize.Width, screenSize.Height);
+            for (int i = -start+1; i < end+1; i++)
+            {
+                Suit randSuit = (Suit) suits.GetValue(random.Next(suits.Length));
+                CardValue randCardValue = (CardValue) cardValues.GetValue(random.Next(cardValues.Length));
+
+                Card card = CardFactory.Self.CreateNew(randSuit, randCardValue);
+                
+                card.AnchorPoint = CCPoint.AnchorMiddle;
+                this.AddChild(card);
+
+
+                //card.AnchorPoint = CCPoint.AnchorLowerLeft;
+                var addingPos = new CCPoint(addPos.X * i, -(addPos.Y * i * i));
+
+                var targetPosition = startPos + addingPos;
+                card.Position = deckPosition;
+                card.SwitchToBackTexture();
+
+                card.Rotation = -90f;
+
+                // Movement
+                //card.Rotation = startDegree + (addDegree * i);
+                var deltaDegree = startDegree + (addDegree * i);
+                //card.Position = targetPosition;
+                card.RotateTo(0.3f, deltaDegree);
+                await card.MoveTo(0.3f, targetPosition);
+
+
+                await card.Pause(0.1f);
+                await card.FlipToFront(0.15f);
+                await card.Pause(0.3f);
+
+
+            }
+
         }
 
-        private async Task CardTestStuff()
-        {
-            const bool useRenderTextures = true;
-            const byte opacity = 255;
-
-            const float positionIncrement = 140;
-
-            Card card = new Card("A", "karo_big.png");
-            //card.ColorIconBigTexture = CCTextureCache.SharedTextureCache.AddImage("karo_big.png");
-            card.PositionX = 200;
-            card.PositionY = 400;
-
-            card.Opacity = opacity;
-            this.AddChild(card);
-
-
-            Card card2 = CardFactory.Self.CreateNew(Suit.Diamonds, CardValue.Jack);
-            this.AddChild(card2);
-
-            card2.Position = new CCPoint(350, 350);
-
-            await card.FlipToFront(4);
-            await card.FlipToBack(3);
-        }
+       
     }
 }

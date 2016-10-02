@@ -51,16 +51,22 @@ namespace SlideInCasinoPT.Droid
             {
               // Set world dimensions
                 
-                int width = Resources.DisplayMetrics.WidthPixels  / 2 ;
-                int height = Resources.DisplayMetrics.HeightPixels / 2;
+                int width = Resources.DisplayMetrics.WidthPixels;// / 2 ;
+                int height = Resources.DisplayMetrics.HeightPixels;// / 2;
+                width = 768;
+                height = 1280;
+
+                //width = 1080;
+                //height = 1920;
 
                 var contentSearchPaths = new List<string>() { "Fonts", "Sounds", "Images" };
-
+                CCSprite.DefaultTexelToContentSizeRatio = 1f;
 
                 gameView.DesignResolution = new CCSizeI(width, height);
+                //gameView.ResolutionPolicy = CCViewResolutionPolicy.ShowAll;
                 gameView.ContentManager.SearchPaths = contentSearchPaths;
 
-                CCScene gameScene = new MainGameScene(gameView);
+                CCScene gameScene = new MainGameScene(gameView, width, height);
                 gameView.RunWithScene(gameScene);
             }
         }

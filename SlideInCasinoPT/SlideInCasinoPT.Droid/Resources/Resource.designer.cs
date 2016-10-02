@@ -100,17 +100,11 @@ namespace SlideInCasinoPT.Droid
 			// aapt resource value: 0x7f070001
 			public const int DrawerLayout = 2131165185;
 			
-			// aapt resource value: 0x7f070005
-			public const int GameView = 2131165189;
+			// aapt resource value: 0x7f070003
+			public const int GameView = 2131165187;
 			
 			// aapt resource value: 0x7f070002
 			public const int OverlayLayout = 2131165186;
-			
-			// aapt resource value: 0x7f070003
-			public const int buttonClickMe = 2131165187;
-			
-			// aapt resource value: 0x7f070004
-			public const int countText = 2131165188;
 			
 			// aapt resource value: 0x7f070000
 			public const int webView = 2131165184;

@@ -18,8 +18,8 @@ namespace SlideInCasinoPT.BlackJack.Model
         private Dictionary<Suit, string> imageFileMap;
         private Dictionary<CardValue, string> cardTextMap;
 
-        private string bgImageFile = "poker_bg.png";
-        private string cardBackImageFile = "poker_back.png";
+        private string bgImageFile = "card_empty.png";
+        private string cardBackImageFile = "card_back.png";
 
 
         private CardFactory()
@@ -53,10 +53,10 @@ namespace SlideInCasinoPT.BlackJack.Model
         {
             imageFileMap = new Dictionary<Suit, string>
             {
-                [Suit.Clubs] = "karo_big.png",
-                [Suit.Diamonds] = "karo_big.png",
-                [Suit.Hearts] = "karo_big.png",
-                [Suit.Spades] = "karo_big.png"
+                [Suit.Clubs] = "clubs_big.png",
+                [Suit.Diamonds] = "diamonds_big.png",
+                [Suit.Hearts] = "hearts_big.png",
+                [Suit.Spades] = "spades_big.png"
 
             };
         }
@@ -67,22 +67,23 @@ namespace SlideInCasinoPT.BlackJack.Model
             var imageFile = imageFileMap[suit];
             var cardText = cardTextMap[value];
 
-            Card card = new Card(cardText, imageFile);
-            CreateVisualComponents(card, cardText, imageFile);
+            Card card = new Card();
+            CreateVisualComponents(card, cardText,suit, imageFile);
             card.BackTexture = CCTextureCache.SharedTextureCache.AddImage(cardBackImageFile);
             return card;
         }
 
-        private void CreateVisualComponents(Card card, string cardText, string imageFile)
+        private void CreateVisualComponents(Card card, string cardText, Suit suit, string imageFile)
         {
             List<CCNode> visualComponents = new List<CCNode>();
             //Create Background Sprite
             CCSprite backgroundSprite = CreateBackground();
+            card.BackTextureRect = backgroundSprite.TextureRectInPixels;
             CCSize cardSize = backgroundSprite.ContentSize;
 
             CCSprite colorIconBig = CreateColorIconBig(imageFile, cardSize);
             CCSprite colorIconSmall = CreateColorIconSmall(imageFile, cardSize);
-            CCLabel cardTextDisplay = CreatCardTextDisplay(cardText, cardSize);
+            CCLabel cardTextDisplay = CreatCardTextDisplay(cardText, cardSize, suit);
 
             visualComponents.Add(backgroundSprite);
             visualComponents.Add(colorIconBig);
@@ -98,12 +99,17 @@ namespace SlideInCasinoPT.BlackJack.Model
 
         private CCSprite CreateBackground()
         {
+            
             CCSprite background = new CCSprite(bgImageFile);
+            
             background.IsAntialiased = false;
             // The background serves as the largest sprite so it essentially defines the
             // card size and anchor point. Which is bottom left.
             background.AnchorPoint = CCPoint.Zero;
-
+            
+            //background.TextureRectInPixels = new CCRect(background.TextureRectInPixels.MinX, background.TextureRectInPixels.MinY,
+            //    background.TextureRectInPixels.MinX + (2 * background.TextureRectInPixels.Size.Width),
+            //    background.TextureRectInPixels.MinY + (2 * background.TextureRectInPixels.Size.Height));
             return background;
         }
 
@@ -121,26 +127,31 @@ namespace SlideInCasinoPT.BlackJack.Model
             CCSprite colorIconSmall = new CCSprite(imageFile);
             colorIconSmall.AnchorPoint = CCPoint.AnchorUpperLeft;
             colorIconSmall.Scale = 0.3f;
-            colorIconSmall.PositionX = 5;
-            colorIconSmall.PositionY = cardSize.Height - 30;
+            colorIconSmall.PositionX = 25;
+            colorIconSmall.PositionY = cardSize.Height - 65;
             colorIconSmall.IsAntialiased = false;
             return colorIconSmall;
         }
 
-        private CCLabel CreatCardTextDisplay(string cardText, CCSize cardSize)
+        private CCLabel CreatCardTextDisplay(string cardText, CCSize cardSize, Suit suit)
         {
             CCLabel cardTextDisplay = CreateLabel(cardText);
-            cardTextDisplay.Color = CCColor3B.Red;
+            if(suit == Suit.Diamonds || suit == Suit.Hearts)
+                cardTextDisplay.Color = CCColor3B.Red;
+            else
+            {
+                cardTextDisplay.Color = CCColor3B.Black;
+            }
             cardTextDisplay.AnchorPoint = new CCPoint(0, .5f);
             cardTextDisplay.HorizontalAlignment = CCTextAlignment.Center;
-            cardTextDisplay.PositionY = cardSize.Height - 15;
-            cardTextDisplay.PositionX = 5;
+            cardTextDisplay.PositionY = cardSize.Height - 50;
+            cardTextDisplay.PositionX = 25;
 
             return cardTextDisplay;
         }
 
 
-        private CCLabel CreateLabel(string text, int fontSize = 26)
+        private CCLabel CreateLabel(string text, int fontSize = 24)
         {
             var toReturn = new CCLabel(text, "Arial", fontSize, CCLabelFormat.SystemFont);
             toReturn.Scale = 1f;
@@ -150,11 +161,6 @@ namespace SlideInCasinoPT.BlackJack.Model
 
         private void CreateRenderTexture(Card card, List<CCNode> visualComponents, CCSize cardSize)
         {
-            // The card needs to be moved to the origin (0,0) so it's rendered on the render target. 
-            // After it's rendered to the CCRenderTexture, it will be moved back to its old position
-
-            
-
             // Temporarily add them so we can render the object:
             foreach (var component in visualComponents)
             {
@@ -165,11 +171,8 @@ namespace SlideInCasinoPT.BlackJack.Model
             // Create the render texture if it hasn't yet been made:
             if (card.RenderTexture == null)
             {
-                // Even though the game is zoomed in to create a pixellated look, we are using
-                // high-resolution textures. Therefore, we want to have our canvas be 2x as big as 
-                // the background so fonts don't appear pixellated
-                var unitResolution = cardSize;
-                var pixelResolution = cardSize;
+                var unitResolution = cardSize ;
+                var pixelResolution = cardSize * 2;
                 card.RenderTexture = new CCRenderTexture(unitResolution, pixelResolution);
             }
 
@@ -201,12 +204,12 @@ namespace SlideInCasinoPT.BlackJack.Model
             // add the render target sprite to this:
             card.AddChild(card.RenderTexture.Sprite);
 
+            card.RenderTexture.Sprite.AnchorPoint = CCPoint.AnchorLowerLeft;
+            card.RenderTexture.Sprite.Position = CCPoint.Zero;
+
             card.RenderTexture.Sprite.AnchorPoint = CCPoint.AnchorMiddle;
-
-
             card.FrontTexture = card.RenderTexture.Texture;
-            //cardFront = RenderTexture.Texture;
-            card.TextureRect = card.RenderTexture.Sprite.TextureRectInPixels;
+            card.FrontTextureRect = card.RenderTexture.Sprite.TextureRectInPixels;
 
 
 
