@@ -31,8 +31,10 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BlackJack\GameConfig.cs" />
     <Compile Include="BlackJack\Model\CardFactory.cs" />
     <Compile Include="BlackJack\ViewModel\CardOld.cs" />
+    <Compile Include="BlackJack\ViewModel\PlayerDeck.cs" />
     <Compile Include="BlackJack\View\Scenes\Layer\BackgroundLayer.cs" />
     <Compile Include="BlackJack\View\Scenes\MainGameScene.cs" />
     <Compile Include="BlackJack\Model\CardValue.cs" />

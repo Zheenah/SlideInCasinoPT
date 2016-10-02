@@ -70,6 +70,12 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
 
         }
 
+        public async Task MoveBy(float duration, CCPoint targetPosition)
+        {
+            CCMoveBy moveToAction = new CCMoveBy(duration, targetPosition);
+            var easeMoveTo = new CCEaseOut(moveToAction, 2f);
+            await this.RunActionAsync(easeMoveTo);
+        }
         public async Task MoveTo(float duration, CCPoint targetPosition)
         {
             CCMoveTo moveToAction = new CCMoveTo(duration, targetPosition);
@@ -80,6 +86,12 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
         public async Task RotateTo(float duration, float deltaAngle)
         {
             CCRotateTo rotateToAction = new CCRotateTo(duration, deltaAngle);
+            var easeMoveTo = new CCEaseOut(rotateToAction, 2f);
+            await this.RunActionAsync(easeMoveTo);
+        }
+        public async Task RotateBy(float duration, float deltaAngle)
+        {
+            CCRotateBy rotateToAction = new CCRotateBy(duration, deltaAngle);
             var easeMoveTo = new CCEaseOut(rotateToAction, 2f);
             await this.RunActionAsync(easeMoveTo);
         }
