@@ -26,6 +26,7 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
             {
                 base.Opacity = value;
                 this.RenderTexture.Sprite.Opacity = value;
+                
 
             }
         }

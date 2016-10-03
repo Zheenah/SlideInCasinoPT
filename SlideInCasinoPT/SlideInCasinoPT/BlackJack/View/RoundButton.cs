@@ -36,7 +36,7 @@ namespace SlideInCasinoPT.BlackJack.View
             heartSprite = new CCSprite("hearts_big.png");
             heartSprite.Scale = 3;
             heartSprite.Color = CCColor3B.Black;
-            heartSprite.Opacity = 200;
+            heartSprite.Opacity = 100;
             this.AddChild(heartSprite);
             // this.AddChild(buttonBackground);
             this.AddChild(textLabel);

@@ -25,11 +25,11 @@ namespace SlideInCasinoPT.Droid
 		{
 			base.OnCreate (bundle);
 
-			//SetContentView (Resource.Layout.Main);
-            SetContentView (Resource.Layout.Overlay);
+			SetContentView (Resource.Layout.Main);
+           // SetContentView (Resource.Layout.Overlay);
 
-            //InitWebView();
-            //InitOverlay();
+            InitWebView();
+            InitOverlay();
 		    InitGame();
 
 

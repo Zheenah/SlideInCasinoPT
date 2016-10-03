@@ -34,7 +34,7 @@ namespace SlideInCasinoPT.BlackJack.View.Scenes.Layer
             this.AddChild(dealerDrawCardButton);
 
             RoundButton removeCardsButton = new RoundButton("Remove\nCards");
-            removeCardsButton.Position = new CCPoint(GameConfig.ScreenSize.Width / 2, 600);
+            removeCardsButton.Position = new CCPoint(GameConfig.ScreenSize.Width / 2, 700);
             removeCardsButton.Click += RemoveCardsButton_Click;
             this.AddChild(removeCardsButton);
 
