@@ -18,7 +18,7 @@ namespace SlideInCasinoPT.BlackJack.View.Scenes.Layer
         protected override void AddedToScene()
         {
             base.AddedToScene();
-            CCSprite background = new CCSprite("table_bg.png");
+            CCSprite background = new CCSprite("bj_table_bg_filz3.png");
             background.IsAntialiased = true;
             background.AnchorPoint = CCPoint.AnchorLowerLeft;
             background.Position = CCPoint.Zero;

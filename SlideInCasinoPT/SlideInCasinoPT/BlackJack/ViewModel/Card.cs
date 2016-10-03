@@ -9,14 +9,14 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
 {
     public class Card : CCNode
     {
-        // new for factory
+
         public CCTexture2D FrontTexture, BackTexture;
         public CCRect FrontTextureRect, BackTextureRect;
 
 
         public CCRenderTexture RenderTexture;
 
-       
+        private Random random;
 
         public override byte Opacity
         {
@@ -32,7 +32,7 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
 
         public Card()
         {
-
+            random = new Random(); 
         }
 
 
@@ -106,10 +106,13 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
         }
         public async Task FlipToFront(float duration)
         {
-            float radius = 60;
+            
+            float radius = 180;
             CCCallFunc switchToFront = new CCCallFunc(this.SwitchToFrontTexture);
-            CCSequence flipSequence = new CCSequence(new CCOrbitCamera(duration, 1, radius, 0, -90, 0, 0), switchToFront,
-                    new CCOrbitCamera(duration, radius, -(radius-1), 90, -90, 0, 0));
+            CCSpawn spawn1 = new CCSpawn(new CCOrbitCamera(duration, 1, 0, 0, -90, 0, 0), new CCScaleBy(duration,0.85f));
+            CCSpawn spawn2 = new CCSpawn(new CCOrbitCamera(duration, 1, 0, 90, -90, 0, 0), new CCScaleTo(duration,1f));
+
+            CCSequence flipSequence = new CCSequence(spawn1, switchToFront, spawn2);
             await RenderTexture.Sprite.RunActionAsync(flipSequence);
 
         }
@@ -121,6 +124,38 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
             await RenderTexture.Sprite.RunActionAsync(flipSequence);
 
         }
+
+        public async Task RandomFlipOutOfScreen(float duration)
+        {
+            // bezier curve with endpoint = outofscreen
+          
+
+
+            CCPoint outOfScreenPoint = new CCPoint();
+            if (random.Next(0, 2)==0)
+            {
+                outOfScreenPoint.X = random.Next(0, (int) GameConfig.ScreenSize.Width);
+                outOfScreenPoint.Y = random.Next(0, 2) == 0 ? GameConfig.ScreenSize.Height + 80 : -80;
+            }
+            else
+            {
+                outOfScreenPoint.Y = random.Next(0, (int)GameConfig.ScreenSize.Height);
+                outOfScreenPoint.X = random.Next(0, 2) == 0 ? GameConfig.ScreenSize.Width + 80 : -80;
+            }
+            
+            CCOrbitCamera flip = new CCOrbitCamera(duration, 1, 0, 0, 300, 0, 200);
+            RenderTexture.Sprite.RunActionAsync(flip);
+            //this.MoveTo(duration, outOfScreenPoint);
+            this.RunActionAsync(new CCEaseOut(new CCMoveTo(duration, outOfScreenPoint), 3f));
+            this.RunActionAsync(new CCEaseOut(new CCScaleTo(duration, 0.6f), 2f));
+            
+            await this.FlipToBack(duration / 4f);
+            await this.FlipToFront(duration / 4f);
+            await this.FlipToBack(duration / 4f);
+            await this.FlipToFront(duration / 4f);
+
+        }
+
 
         public async Task Pause(float duration)
         {

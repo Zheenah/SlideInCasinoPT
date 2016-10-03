@@ -25,7 +25,7 @@ namespace SlideInCasinoPT.Droid
 		{
 			base.OnCreate (bundle);
 
-//			SetContentView (Resource.Layout.Main);
+			//SetContentView (Resource.Layout.Main);
             SetContentView (Resource.Layout.Overlay);
 
             //InitWebView();
@@ -62,7 +62,7 @@ namespace SlideInCasinoPT.Droid
                 var contentSearchPaths = new List<string>() { "Fonts", "Sounds", "Images" };
                 CCSprite.DefaultTexelToContentSizeRatio = 1f;
 
-                gameView.DesignResolution = new CCSizeI(width, height);
+                gameView.DesignResolution = new CCSizeI(width, height); 
                 //gameView.ResolutionPolicy = CCViewResolutionPolicy.ShowAll;
                 gameView.ContentManager.SearchPaths = contentSearchPaths;
 

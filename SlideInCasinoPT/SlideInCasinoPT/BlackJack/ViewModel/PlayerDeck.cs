@@ -10,10 +10,10 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
 {
     public class PlayerDeck : CCNode
     {
-        private CCPoint DeckPosition;
+        public CCPoint DeckPosition;
         private CCPoint PositionSplit1, PositionSplit2;
 
-        private List<Card> deck1;
+        public List<Card> Deck1;
 
         float amplitude = 1f;
   
@@ -27,29 +27,30 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
 
         private CCSize screenSize;
 
-        public PlayerDeck()
+        public PlayerDeck(bool bowUp)
         {
-           
-            this.screenSize = GameConfig.ScreenSize;
-
-
             DeckPosition = new CCPoint(screenSize.Width/2, screenSize.Height * (1f/3f));
+
+            this.screenSize = GameConfig.ScreenSize;
+            
 
             int bowValue = bowUp ? 1 : -1;
 
             angleBetweenCards = 5f * bowValue;
             distBetweenCards = new CCPoint(30, amplitude * bowValue);
 
-            deck1 = new List<Card>();
+            Deck1 = new List<Card>();
 
         }
+
+
 
         public async Task DrawCard(Card card)
         {
             // Move all cards one position to left
-            if (deck1.Count%2 == 1)
+            if (Deck1.Count%2 == 1)
             {
-               await MoveCardsToLeft(0.1f);
+               await MoveCardsToLeft(0.2f);
 
             }
 
@@ -60,7 +61,7 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
             card.SwitchToBackTexture();
             this.AddChild(card);
             // Move to right Position
-            int deckPos = (deck1.Count / 2) ;
+            int deckPos = (Deck1.Count / 2) ;
 
 
            var addingPos = new CCPoint(distBetweenCards.X * deckPos, -(distBetweenCards.Y * deckPos * deckPos));
@@ -69,16 +70,16 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
             var targetPosition = DeckPosition + addingPos;
             var targetAngle =  (angleBetweenCards * deckPos);
 
-            card.RotateTo(1f, targetAngle);
-            await card.MoveTo(1f, targetPosition);
+            card.RotateTo(0.5f, targetAngle);
+            await card.MoveTo(0.5f, targetPosition);
 
 
             await card.Pause(0.1f);
             await card.FlipToFront(0.15f);
-            await card.Pause(0.3f);
+            //await card.Pause(0.3f);
 
 
-            deck1.Add(card);
+            Deck1.Add(card);
             // Add new card
 
         }
@@ -87,15 +88,11 @@ namespace SlideInCasinoPT.BlackJack.ViewModel
         {
 
 
-            for (int i = 0; i < deck1.Count; i++)
+            for (int i = 0; i < Deck1.Count; i++)
             {
-                Card card = deck1[i];
-                //todo: calc i
-                var x = i - (deck1.Count/2f) - 1;
+                Card card = Deck1[i];
+                var x = i - (Deck1.Count/2f) - 1;
                 var newPosX = card.PositionX - distBetweenCards.X;
-                //card.MoveBy(0.1f, new CCPoint(-distBetweenCards.X, 0));
-
-                //var newPosY = card.PositionY - distBetweenCards.Y*x*x;
                 var newPosY = DeckPosition.Y - distBetweenCards.Y * x * x;
                 card.MoveTo(duration, new CCPoint(newPosX, newPosY));
                 card.RotateBy(duration, -angleBetweenCards);

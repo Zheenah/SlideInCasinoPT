@@ -131,5 +131,17 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\Images\card_back.png" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Content\Images\bj_table_bg_filz.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Content\Images\bj_table_bg_filz2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Content\Images\bj_table_bg_filz3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Content\Images\NewFolder1\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
 </Project>

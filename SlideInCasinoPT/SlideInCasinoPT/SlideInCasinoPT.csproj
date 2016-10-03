@@ -33,15 +33,18 @@
   <ItemGroup>
     <Compile Include="BlackJack\GameConfig.cs" />
     <Compile Include="BlackJack\Model\CardFactory.cs" />
-    <Compile Include="BlackJack\ViewModel\CardOld.cs" />
+    <Compile Include="BlackJack\Tests\CardOld.cs" />
     <Compile Include="BlackJack\ViewModel\PlayerDeck.cs" />
+    <Compile Include="BlackJack\View\RoundButton.cs" />
     <Compile Include="BlackJack\View\Scenes\Layer\BackgroundLayer.cs" />
+    <Compile Include="BlackJack\View\Scenes\Layer\GameLayer.cs" />
+    <Compile Include="BlackJack\View\Scenes\Layer\UiLayer.cs" />
     <Compile Include="BlackJack\View\Scenes\MainGameScene.cs" />
     <Compile Include="BlackJack\Model\CardValue.cs" />
     <Compile Include="BlackJack\Model\Suit.cs" />
     <Compile Include="BlackJack\ViewModel\Card.cs" />
-    <Compile Include="BlackJack\ViewModel\Playcard.cs" />
-    <Compile Include="BlackJack\View\Scenes\Layer\SampleLayer.cs" />
+    <Compile Include="BlackJack\Tests\Playcard.cs" />
+    <Compile Include="BlackJack\Tests\SampleLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,8 +11,10 @@ namespace SlideInCasinoPT.BlackJack.View.Scenes
             GameConfig.ScreenSize = new CCSize(width, height);
             var backgroundLayer = new BackgroundLayer(width, height);
             this.AddLayer(backgroundLayer);
-            var sampleLayer = new SampleLayer(width, height);
-            this.AddLayer(sampleLayer);
+            var gameLayer = new GameLayer();
+            this.AddLayer(gameLayer);
+            var uiLayer = new UiLayer(gameLayer);
+            this.AddLayer(uiLayer);
             
         }
         

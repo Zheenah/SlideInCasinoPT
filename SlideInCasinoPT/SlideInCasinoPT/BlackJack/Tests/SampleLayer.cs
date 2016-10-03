@@ -39,22 +39,27 @@ namespace SlideInCasinoPT.BlackJack.View.Scenes.Layer
 
             GameView.Stats.Enabled = true;
 
-            TestPlayerDeck();
+            var deckPos1 =  new CCPoint(screenSize.Width / 2, screenSize.Height * (1f / 3f));
+            var deckPos2 =  new CCPoint(screenSize.Width / 2, screenSize.Height - screenSize.Height*(1f / 6f));
+
+            TestPlayerDeck(deckPos1, 20);
+            TestPlayerDeck(deckPos2, 10);
             //await TestDeckDraw();
 
 
         }
 
-        private async void TestPlayerDeck()
+        private async Task TestPlayerDeck(CCPoint deckPosition, int cardCount)
         {
-            PlayerDeck playerDeck = new PlayerDeck();
+            PlayerDeck playerDeck = new PlayerDeck(false);
+            playerDeck.DeckPosition = deckPosition;
             this.AddChild(playerDeck);
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < cardCount; i++)
             {
                 await playerDeck.DrawRandomCard();
                 await this.RunActionAsync(new CCDelayTime(0.1f));
-            }
+            }            
             
 
 
